@@ -1,0 +1,36 @@
+spring.cloud.stream:
+  kafka:
+    binder:
+      autoCreateTopics: true
+      consumerProperties:
+        isolation.level: read_committed
+    bindings:
+      CustomerProduce-out-0:
+        producer:
+          configuration:
+            acks: all
+            delivery.timeout.ms: 20000
+            max.block.ms: 20000
+            request.timeout.ms: 20000
+            retry.backoff.ms: 250
+            retries: 40
+      CustomerConsume-in-0:
+        consumer:
+          max-attempts: 1
+          autoCommitOffset: true
+          autoCommitOnError: false
+          configuration:
+            max.poll.records: 1
+            session.timeout.ms: 60000
+            max.poll.interval.ms: 3600000
+  bindings:
+    CustomerProduce-out-0:
+      destination: demo.customer.0
+      binder: demoKafka
+    CustomerConsume-in-0:
+      destination: demo.customer.0
+      group: CustomerConsumeGroup
+      binder: demoKafka
+  function:
+    definition: customerConsume;
+
